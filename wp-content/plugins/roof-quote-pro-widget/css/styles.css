@@ -1,0 +1,9 @@
+#my-sidebar-span {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+}
