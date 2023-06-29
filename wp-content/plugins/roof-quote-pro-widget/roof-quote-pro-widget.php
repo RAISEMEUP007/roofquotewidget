@@ -60,16 +60,16 @@ function roof_quote_pro_widget_settings_pages_callback()
     echo '<textarea id="pages" name="pages">' . esc_textarea(get_option('pages')) . '</textarea>';
 }
 
-function roof_quote_pro_widget_enqueue_script()
-{
-    $widget_id = get_option('widget-id');
+// function roof_quote_pro_widget_enqueue_script()
+// {
+//     $widget_id = get_option('widget-id');
 
-    if (!empty($widget_id)) {
-        wp_enqueue_script('roof-quote-pro-widget', 'https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id, array(), null, false);
-    }
-}
+//     if (!empty($widget_id)) {
+//         wp_enqueue_script('roof-quote-pro-widget', 'https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id, array(), null, false);
+//     }
+// }
 
-add_action('wp_enqueue_scripts', 'roof_quote_pro_widget_enqueue_script');
+// add_action('wp_enqueue_scripts', 'roof_quote_pro_widget_enqueue_script');
 
 function roof_quote_pro_widget_display_slideout_widget()
 {
@@ -80,19 +80,43 @@ function roof_quote_pro_widget_display_slideout_widget()
         if ($sitewide == 'on') {
             echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
         } 
-        else {
-            global $post;
-            $pages = get_option('pages');
-            $pages_array = explode("\n", $pages);
+        // else {
+        //     global $post;
+        //     $pages = get_option('pages');
+        //     $pages_array = explode("\n", $pages);
 
-            if (in_array($post->ID, $pages_array)) {
-                echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
-            }
-        }
+        //     if (in_array($post->ID, $pages_array)) {
+        //         echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
+        //     }
+        // }
     }
 }
 
 add_action('wp_head', 'roof_quote_pro_widget_display_slideout_widget');
+
+function roof_quote_pro_widget_display_slideout_special_widget()
+{
+  // echo 'Hello';
+
+    $widget_id = get_option('widget-id');
+    $sitewide = get_option('sitewide');
+
+    if (!empty($widget_id)) {
+        if ($sitewide != 'on') {
+            global $post;
+            $pages = get_option('pages');
+
+            $pages_array = explode("\n", $pages);
+
+            if (in_array(get_the_title($post->ID), $pages_array)) {
+                // echo 'Hello';
+                echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
+            }
+        } 
+    }
+}
+
+add_action('wp_footer', 'roof_quote_pro_widget_display_slideout_special_widget');
 
 function roof_quote_pro_widget_shortcode($atts)
 {
@@ -105,38 +129,13 @@ function roof_quote_pro_widget_shortcode($atts)
 
 add_shortcode('roof-quote-pro-widget', 'roof_quote_pro_widget_shortcode');
 
-function my_sidebar_plugin_enqueue_assets() {
-  wp_enqueue_style( 'my-sidebar-plugin-styles', plugins_url( 'css/styles.css', __FILE__ ) );
+function my_custom_block_enqueue_assets() {
+  wp_enqueue_script(
+      'my-custom-block',
+      plugins_url( 'dist/my-custom-block.js', __FILE__ ),
+      array( 'wp-blocks', 'wp-element' ),
+      filemtime( plugin_dir_path( __FILE__ ) . 'dist/my-custom-block.js' )
+  );
 }
-add_action( 'wp_enqueue_scripts', 'my_sidebar_plugin_enqueue_assets' );
 
-function my_sidebar_plugin_display_span() {
-  echo '<span id="my-sidebar-span">hello</span>';
-}
-
-function my_sidebar_plugin_add_to_page() {
-  if ( is_page() ) {
-      my_sidebar_plugin_display_span();
-  }
-}
-add_action('wp_body_open', 'my_sidebar_plugin_add_to_page');
-
-// function get_all_page_names() {
-//   $pages = get_pages(); // Get all pages
-
-//   $page_names = array(); // Array to store page names
-
-//   foreach ($pages as $page) {
-//       $page_names[] = $page->post_title; // Extract page name and add it to the
-//   }
-
-//   return $page_names; // Return the array of page names
-// }
-
-// // Call the function to retrieve all page names
-// $page_names = get_all_page_names();
-
-// // Display the page names
-// foreach ($page_names as $page_name) {
-//   echo $page_name . '<>';
-// }
+add_action( 'enqueue_block_editor_assets', 'my_custom_block_enqueue_assets' );
