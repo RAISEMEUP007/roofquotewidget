@@ -9,7 +9,7 @@ Author: Creative Bull
 
 function roof_quote_pro_widget_settings_page()
 {
-    add_options_page('Roof Quote Pro Widget', 'Roof Quote Pro Widget', 'manage_options', 'RQO-plugin', 'roof_quote_pro_widget_render_plugin_settings_page');
+    add_options_page('Roof Quote Pro', 'Roof Quote Pro', 'manage_options', 'RQO-plugin', 'roof_quote_pro_widget_render_plugin_settings_page');
 }
 
 add_action('admin_menu', 'roof_quote_pro_widget_settings_page');
@@ -20,7 +20,7 @@ function roof_quote_pro_widget_render_plugin_settings_page()
 {
 ?>
     <div class="wrap">
-        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+        <img src="<?php echo plugins_url( 'src/logo.png', __FILE__ ); ?>" alt="Roof Logo" width="300px">
 
         <form method="post" action="options.php">
             <?php settings_fields('roof-quote-pro-widget-settings'); ?>
