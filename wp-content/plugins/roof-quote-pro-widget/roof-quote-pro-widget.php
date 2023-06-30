@@ -57,19 +57,44 @@ function roof_quote_pro_widget_settings_sitewide_callback()
 
 function roof_quote_pro_widget_settings_pages_callback()
 {
-    echo '<textarea id="pages" name="pages">' . esc_textarea(get_option('pages')) . '</textarea>';
+    $pages = get_pages();
+    $selected_pages = get_option('pages', array()); // Get the selected pages as an array
+
+    echo '<select id="pages" name="pages[]" multiple>'; // Change to <> and add "multiple" attribute
+
+    if(gettype($selected_pages) == 'string' ){
+        foreach ($pages as $page) {
+            echo '<option value="' . esc_attr($page->post_title) . '" '  . '>' . esc_html($page->post_title) . '</option>';
+        }   
+    }
+    else {
+        foreach ($pages as $page) {
+            $selected = selected(true, in_array($page->post_title, $selected_pages)); // Check if page is selected
+            echo '<option value="' . esc_attr($page->post_title) . '" ' . $selected . '>' . esc_html($page->post_title) . '</option>';
+        }    
+    }
+
+    echo '</select>';
+
+    // foreach ($pages as $page) {
+    //     $selected = selected(true, in_array($page->post_title, $selected_pages)); // Check if page is selected
+    //     echo  '>';
+    // }
+
+    // Enqueue the Select2 script and style from the CDN
+    wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '4.1.0-rc.0', true);
+    wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0');
+
+    // Add JavaScript code to initialize Select2 on this select field
+    echo '<style>#pages {
+        width: 300px; /* Change the width of the select */
+    }</style><script>
+        jQuery(document).ready(function($) { 
+            $("#pages").select2(); 
+        });
+    </script>';
 }
 
-// function roof_quote_pro_widget_enqueue_script()
-// {
-//     $widget_id = get_option('widget-id');
-
-//     if (!empty($widget_id)) {
-//         wp_enqueue_script('roof-quote-pro-widget', 'https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id, array(), null, false);
-//     }
-// }
-
-// add_action('wp_enqueue_scripts', 'roof_quote_pro_widget_enqueue_script');
 
 function roof_quote_pro_widget_display_slideout_widget()
 {
@@ -80,15 +105,6 @@ function roof_quote_pro_widget_display_slideout_widget()
         if ($sitewide == 'on') {
             echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
         } 
-        // else {
-        //     global $post;
-        //     $pages = get_option('pages');
-        //     $pages_array = explode("\n", $pages);
-
-        //     if (in_array($post->ID, $pages_array)) {
-        //         echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
-        //     }
-        // }
     }
 }
 
@@ -104,12 +120,9 @@ function roof_quote_pro_widget_display_slideout_special_widget()
     if (!empty($widget_id)) {
         if ($sitewide != 'on') {
             global $post;
-            $pages = get_option('pages');
+            $pages = get_option('pages', array());
 
-            $pages_array = explode("\n", $pages);
-
-            if (in_array(get_the_title($post->ID), $pages_array)) {
-                // echo 'Hello';
+            if (in_array(get_the_title($post->ID), $pages)) {
                 echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
             }
         } 
@@ -130,12 +143,17 @@ function roof_quote_pro_widget_shortcode($atts)
 add_shortcode('roof-quote-pro-widget', 'roof_quote_pro_widget_shortcode');
 
 function my_custom_block_enqueue_assets() {
-  wp_enqueue_script(
-      'my-custom-block',
-      plugins_url( 'dist/my-custom-block.js', __FILE__ ),
-      array( 'wp-blocks', 'wp-element' ),
-      filemtime( plugin_dir_path( __FILE__ ) . 'dist/my-custom-block.js' )
-  );
+
+    $widget_id = get_option('widget-id');
+
+    wp_enqueue_script(
+        'my-custom-block',
+        plugins_url( 'dist/my-custom-block.js', __FILE__ ),
+        array( 'wp-blocks', 'wp-element' ),
+        filemtime( plugin_dir_path( __FILE__ ) . 'dist/my-custom-block.js' )
+    );
+
+    wp_localize_script( 'my-custom-block', 'widgetId', $widget_id );
 }
 
 add_action( 'enqueue_block_editor_assets', 'my_custom_block_enqueue_assets' );
