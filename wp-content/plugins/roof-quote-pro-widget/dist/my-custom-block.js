@@ -6,17 +6,28 @@
       title: 'Roof Quote Pro',
       icon: 'admin-site',
       edit: function () {
+        var scriptElement = el('script', {
+            src: 'https://app.roofle.com/roof-quote-pro-embedded-widget.js?id='+widgetId,
+            async: true,
+          });
+    
           return el(
-              'div',
-              { className: 'my-block' },
-              'This is my custom block content.'
+            'div',
+            { className: 'my-block' },
+            'Roof Quote Pro Block',
+            scriptElement // Append the <script> element to the block content
           );
       },
       save: function () {
+        var scriptElement = el('script', {
+            src: 'https://app.roofle.com/roof-quote-pro-embedded-widget.js?id='+widgetId,
+            async: true,
+          });
           return el(
               'div',
               { className: 'my-block' },
-              'This is my custom block content.'
+              '',
+              scriptElement
           );
       },
   });
