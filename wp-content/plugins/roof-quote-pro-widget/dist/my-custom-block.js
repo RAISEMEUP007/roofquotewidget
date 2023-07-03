@@ -14,7 +14,7 @@
           return el(
             'div',
             { className: 'my-block' },
-            'Roof Quote Pro Block',
+            'Roof Quote Pro',
             scriptElement // Append the <script> element to the block content
           );
       },
