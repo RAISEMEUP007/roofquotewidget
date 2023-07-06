@@ -1,15 +1,15 @@
 <?php
 
-/* 
-Plugin Name: Roof Quote PRO Widget
-Description: A plugin to install the Roof Quote PRO widget.
+/*
+Plugin Name: Roof Quote PRO™
+Description: A plugin to install the Roof Quote PRO™ widget.
 Version: 1.0
-Author: Creative Bull
+Author: Roofle Inc.
 */
 
 function roof_quote_pro_widget_settings_page()
 {
-    add_options_page('Roof Quote Pro', 'Roof Quote Pro', 'manage_options', 'RQO-plugin', 'roof_quote_pro_widget_render_plugin_settings_page');
+    add_options_page('Roof Quote PRO™', 'Roof Quote PRO™', 'manage_options', 'RQO-plugin', 'roof_quote_pro_widget_render_plugin_settings_page');
 }
 
 add_action('admin_menu', 'roof_quote_pro_widget_settings_page');
@@ -65,13 +65,13 @@ function roof_quote_pro_widget_settings_pages_callback()
     if(gettype($selected_pages) == 'string' ){
         foreach ($pages as $page) {
             echo '<option value="' . esc_attr($page->post_title) . '" '  . '>' . esc_html($page->post_title) . '</option>';
-        }   
+        }
     }
     else {
         foreach ($pages as $page) {
             $selected = selected(true, in_array($page->post_title, $selected_pages)); // Check if page is selected
             echo '<option value="' . esc_attr($page->post_title) . '" ' . $selected . '>' . esc_html($page->post_title) . '</option>';
-        }    
+        }
     }
 
     echo '</select>';
@@ -89,8 +89,8 @@ function roof_quote_pro_widget_settings_pages_callback()
     echo '<style>#pages {
         width: 300px; /* Change the width of the select */
     }</style><script>
-        jQuery(document).ready(function($) { 
-            $("#pages").select2(); 
+        jQuery(document).ready(function($) {
+            $("#pages").select2();
         });
     </script>';
 }
@@ -104,7 +104,7 @@ function roof_quote_pro_widget_display_slideout_widget()
     if (!empty($widget_id)) {
         if ($sitewide == 'on') {
             echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
-        } 
+        }
     }
 }
 
@@ -125,7 +125,7 @@ function roof_quote_pro_widget_display_slideout_special_widget()
             if (in_array(get_the_title($post->ID), $pages)) {
                 echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
             }
-        } 
+        }
     }
 }
 
