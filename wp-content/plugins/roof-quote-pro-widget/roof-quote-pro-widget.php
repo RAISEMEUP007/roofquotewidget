@@ -20,7 +20,7 @@ function roof_quote_pro_widget_render_plugin_settings_page()
 {
 ?>
     <div class="wrap">
-        <img src="<?php echo plugins_url( 'src/logo.png', __FILE__ ); ?>" alt="Roof Logo" width="300px">
+        <img src="<?php echo plugins_url( 'dist/logo.png', __FILE__ ); ?>" alt="Roof Logo" width="300px">
 
         <form method="post" action="options.php">
             <?php settings_fields('roof-quote-pro-widget-settings'); ?>
@@ -34,7 +34,7 @@ function roof_quote_pro_widget_render_plugin_settings_page()
 
 function roof_quote_pro_widget_settings_init()
 {
-    register_setting('roof-quote-pro-widget-settings', 'widget-id');
+    register_setting('roof-quote-pro-widget-settings', 'roof-widget-id');
     register_setting('roof-quote-pro-widget-settings', 'sitewide');
     register_setting('roof-quote-pro-widget-settings', 'pages');
     add_settings_section('roof-quote-pro-widget-settings-section', '', '', 'roof-quote-pro-widget-settings');
@@ -95,6 +95,10 @@ function roof_quote_pro_widget_settings_pages_callback()
     </script>';
 }
 
+function roof_quote_pro_widget_enqueue_script() {
+    wp_enqueue_script( 'roof-quote-pro-widget', plugins_url( '/dist/roof-script.js', __FILE__ ), array(), '1.0', true );
+}
+
 
 function roof_quote_pro_widget_display_slideout_widget()
 {
@@ -103,7 +107,8 @@ function roof_quote_pro_widget_display_slideout_widget()
 
     if (!empty($widget_id)) {
         if ($sitewide == 'on') {
-            echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
+            echo '<input type="hidden" id="widget-script-url" value="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" />';
+            roof_quote_pro_widget_enqueue_script();
         }
     }
 }
@@ -123,7 +128,8 @@ function roof_quote_pro_widget_display_slideout_special_widget()
             $pages = get_option('pages', array());
 
             if (in_array(get_the_title($post->ID), $pages)) {
-                echo '<script src="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" async></script>';
+                echo '<input type="hidden" id="widget-script-url" value="https://app.roofle.com/roof-quote-pro-widget.js?id=' . $widget_id . '" />';
+                roof_quote_pro_widget_enqueue_script();
             }
         }
     }
