@@ -14,14 +14,17 @@
           );
       },
       save: function () {
+        var scriptUrl = document.getElementById('widget-script-url').value;
+     
         var scriptElement = el('script', {
-          src: 'https://app.roofle.com/roof-quote-pro-embedded-widget.js?id='+encodeURIComponent(widgetId),
+          src: scriptUrl,
           async: true,
         });
-          return el(
+        
+        return el(
               'div',
               { className: 'my-block' },
-              'Roof Quote Pro',
+              "",
               scriptElement // Append the <script> element to the block content
           );
       },

@@ -34,7 +34,7 @@ function roof_quote_pro_widget_render_plugin_settings_page()
 
 function roof_quote_pro_widget_settings_init()
 {
-    register_setting('roof-quote-pro-widget-settings', 'roof-widget-id');
+    register_setting('roof-quote-pro-widget-settings', 'widget-id');
     register_setting('roof-quote-pro-widget-settings', 'sitewide');
     register_setting('roof-quote-pro-widget-settings', 'pages');
     add_settings_section('roof-quote-pro-widget-settings-section', '', '', 'roof-quote-pro-widget-settings');
@@ -117,11 +117,10 @@ add_action('wp_head', 'roof_quote_pro_widget_display_slideout_widget');
 
 function roof_quote_pro_widget_display_slideout_special_widget()
 {
-  // echo 'Hello';
 
     $widget_id = get_option('widget-id');
     $sitewide = get_option('sitewide');
-
+   
     if (!empty($widget_id)) {
         if ($sitewide != 'on') {
             global $post;
@@ -151,6 +150,7 @@ add_shortcode('roof-quote-pro-widget', 'roof_quote_pro_widget_shortcode');
 function my_custom_block_enqueue_assets() {
 
     $widget_id = get_option('widget-id');
+    echo '<input type="hidden" id="widget-script-url" value="https://app.roofle.com/roof-quote-pro-embedded-widget.js?id=' . $widget_id . '" />';
 
     wp_enqueue_script(
         'my-custom-block',
@@ -163,3 +163,8 @@ function my_custom_block_enqueue_assets() {
 }
 
 add_action( 'enqueue_block_editor_assets', 'my_custom_block_enqueue_assets' );
+
+add_filter('rocket_minify_js_excluded_inline_tags', function( $tags ) {
+    $tags[] = 'script';
+    return $tags;
+});
